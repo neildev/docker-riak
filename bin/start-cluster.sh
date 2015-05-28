@@ -27,7 +27,7 @@ fi
 DOCKER_RIAK_CLUSTER_SIZE=${DOCKER_RIAK_CLUSTER_SIZE:-5}
 DOCKER_RIAK_BACKEND=${DOCKER_RIAK_BACKEND:-bitcask}
 
-if docker ps -a | grep "hectcastro/riak" >/dev/null; then
+if docker ps | grep "hectcastro/riak" >/dev/null; then
   echo ""
   echo "It looks like you already have some Riak containers running."
   echo "Please take them down before attempting to bring up another"
@@ -75,15 +75,15 @@ do
                -p $publish_pb_port \
                --link "riak01:seed" \
                --name "riak${index}" \
-               -d hectcastro/riak > /dev/null 2>&1
+               -d hectcastro/riak #> /dev/null 2>&1
   else
     docker run -e "DOCKER_RIAK_CLUSTER_SIZE=${DOCKER_RIAK_CLUSTER_SIZE}" \
                -e "DOCKER_RIAK_AUTOMATIC_CLUSTERING=${DOCKER_RIAK_AUTOMATIC_CLUSTERING}" \
                -e "DOCKER_RIAK_BACKEND=${DOCKER_RIAK_BACKEND}" \
-               -p $publish_http_port \
-               -p $publish_pb_port \
+               -p $publish_http_port:$publish_http_port \
+               -p $publish_pb_port:$publish_pb_port \
                --name "riak${index}" \
-               -d hectcastro/riak > /dev/null 2>&1
+               -d hectcastro/riak #> /dev/null 2>&1
   fi
 
   CONTAINER_ID=$(docker ps | egrep "riak${index}[^/]" | cut -d" " -f1)

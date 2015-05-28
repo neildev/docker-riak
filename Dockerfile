@@ -39,6 +39,10 @@ RUN sed -i.bak 's/listener.http.internal = 127.0.0.1/listener.http.internal = 0.
 VOLUME /var/lib/riak
 VOLUME /var/log/riak
 
+# Provision Riak Datatypes
+RUN mkdir -p /etc/service/provision
+ADD bin/provision.sh /etc/service/provision/run
+
 # Open ports for HTTP and Protocol Buffers
 EXPOSE 8098 8087
 
